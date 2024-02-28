@@ -21,6 +21,10 @@ first_model <-
     formula = flying_time ~ length + width,
     data = analysis_data,
     family = gaussian(),
+    
+    # Specify the priors
+    # autoscale = TRUE looks at the data, moves the priors around to try to 
+    # improve the fit
     prior = normal(location = 0, scale = 2.5, autoscale = TRUE),
     prior_intercept = normal(location = 0, scale = 2.5, autoscale = TRUE),
     prior_aux = exponential(rate = 1, autoscale = TRUE),
@@ -34,4 +38,31 @@ saveRDS(
   file = "models/first_model.rds"
 )
 
+
+### Model data ####
+# No wing width for this model
+second_model <-
+  stan_glm(
+    formula = flying_time ~ length,
+    data = analysis_data,
+    family = gaussian(),
+    
+    # Specify the priors
+    # autoscale = TRUE looks at the data, then moves the priors around to try to 
+    # improve the fit
+    # If we set autoscale = FALSE, our fits will be poor
+    prior = normal(location = 0, scale = 2.5, autoscale = TRUE),
+    prior_intercept = normal(location = 0, scale = 2.5, autoscale = TRUE),
+    prior_aux = exponential(rate = 1, autoscale = TRUE),
+    seed = 853
+  )
+
+prior_summary(second_model)
+
+
+#### Save model ####
+saveRDS(
+  second_model,
+  file = "models/second_model.rds"
+)
 
